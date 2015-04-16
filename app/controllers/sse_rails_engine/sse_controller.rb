@@ -1,3 +1,5 @@
+require_dependency "sse_rails_engine/application_controller"
+
 module SseRailsEngine
   class SseController < ApplicationController
     include ActionController::Live

@@ -22,7 +22,7 @@ module SseRailsEngine
     end
 
     def register(response)
-      ActiveRecord::Base.clear_active_connections!
+      ActiveRecord::Base.clear_active_connections! if defined?(ActiveRecord)
       response.headers['Content-Type'] = 'text/event-stream'
       response.headers['Cache-Control'] = 'no-cache'
       @mutex.synchronize do
