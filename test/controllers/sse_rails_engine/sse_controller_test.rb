@@ -1,13 +1,16 @@
 require_relative '../../test_helper'
 
 describe SseRailsEngine::SseController do
-  before { SseRailsEngine.instance_variable_set(:@manager, nil) }
+  before do
+    SseRailsEngine.instance_variable_set(:@manager, nil)
+    @routes = SseRailsEngine::Engine.routes
+  end
 
   it 'registers new connections' do
     SseRailsEngine.expects(:wait_for_disconnect).returns(true)
     get :connect
-    SseRailsEngine.manager.connections.size.must_equal 1
     assert_response :success
+    SseRailsEngine.manager.connections.size.must_equal 1
   end
 
   it 'sends event to connection' do

@@ -8,7 +8,7 @@ require 'mocha/mini_test'
 require 'hashie'
 require 'codeclimate-test-reporter'
 
-CodeClimate::TestReporter.start
+CodeClimate::TestReporter.start if ENV['CODECLIMATE_REPO_TOKEN']
 
 # Filter out Minitest backtrace while allowing backtrace from other libraries
 # to be shown.
@@ -24,7 +24,4 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
 end
 
 class ActiveSupport::TestCase
-  before do
-    @routes = SseRailsEngine::Engine.routes
-  end
 end

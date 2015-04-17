@@ -1,19 +1,4 @@
 module SseRailsEngine
-  def self.manager
-    @manager ||= Manager.new
-  end
-
-  def self.wait_for_disconnect(response)
-    loop do
-      sleep 3
-      break unless manager.registered?(response)
-    end
-  end
-
-  def self.send_event(name, data)
-    manager.send_event(name, data)
-  end
-
   class Manager
     attr_reader :connections
 
@@ -74,7 +59,7 @@ module SseRailsEngine
     def start_heartbeats
       Thread.new do
         loop do
-          sleep 5
+          sleep SseRailsEngine.heartbeat_interval
           heartbeat
         end
       end
