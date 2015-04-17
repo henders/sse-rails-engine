@@ -46,7 +46,6 @@ module SseRailsEngine
 
     def send_event(name, data)
       @mutex.synchronize do
-        Rails.logger.debug "Sending: #{name} to #{@connections.keys.size} clients"
         @connections.dup.each do |stream, sse|
           begin
             sse.write(data, event: name)

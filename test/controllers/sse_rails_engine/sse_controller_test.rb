@@ -1,6 +1,8 @@
 require_relative '../../test_helper'
 
 describe SseRailsEngine::SseController do
+  before { SseRailsEngine.instance_variable_set(:@manager, nil) }
+
   it 'registers new connections' do
     SseRailsEngine.expects(:wait_for_disconnect).returns(true)
     get :connect
