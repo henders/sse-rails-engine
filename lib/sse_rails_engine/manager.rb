@@ -1,6 +1,4 @@
 module SseRailsEngine
-  delegate :send_event, to: :manager
-
   def self.manager
     @manager ||= Manager.new
   end
@@ -10,6 +8,10 @@ module SseRailsEngine
       sleep 3
       break unless manager.registered?(response)
     end
+  end
+
+  def self.send_event(name, data)
+    manager.send_event(name, data)
   end
 
   class Manager
@@ -32,7 +34,7 @@ module SseRailsEngine
 
     def registered?(response)
       @mutex.synchronize do
-        @connections[response.stream]
+        @connections[response.stream] ? true : false
       end
     end
 
@@ -44,7 +46,7 @@ module SseRailsEngine
 
     def send_event(name, data)
       @mutex.synchronize do
-        Rails.logger.info "Sending: #{name} to #{@connections.keys.size} clients"
+        Rails.logger.debug "Sending: #{name} to #{@connections.keys.size} clients"
         @connections.dup.each do |stream, sse|
           begin
             sse.write(data, event: name)
@@ -63,7 +65,7 @@ module SseRailsEngine
       return if @connections[stream].nil?
       @connections[stream].close
       @connections.delete(stream)
-      stream.close
+      stream.close unless stream.closed?
     end
 
     def heartbeat

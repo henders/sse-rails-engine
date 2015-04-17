@@ -29,7 +29,7 @@ $(document).ready(function () {
 
 Then you can send an event from anywhere in your app:
 ```
-    SseRailsEngine.manager.send_event('test', { foo: 'bar' })
+SseRailsEngine.send_event('test', { foo: 'bar' })
 ```
 
 # License

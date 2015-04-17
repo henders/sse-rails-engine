@@ -4,6 +4,8 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
 require "rails/test_help"
 require 'minitest/rails'
+require 'mocha/mini_test'
+require 'hashie'
 
 # Filter out Minitest backtrace while allowing backtrace from other libraries
 # to be shown.
