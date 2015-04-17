@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/henders/sse-rails-engine.svg?branch=master)](https://travis-ci.org/henders/sse-rails-engine)
 [![Code Climate](https://codeclimate.com/github/henders/sse-rails-engine/badges/gpa.svg)](https://codeclimate.com/github/henders/sse-rails-engine)
+[![Test Coverage](https://codeclimate.com/github/henders/sse-rails-engine/badges/coverage.svg)](https://codeclimate.com/github/henders/sse-rails-engine)
 
 This engine is designed to allow Server-Sent Events to be broadcast to all listeners from anywhere
 in your Rails app.
