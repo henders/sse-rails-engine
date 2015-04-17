@@ -1,5 +1,8 @@
 This engine is designed to allow Server-Sent Events to be broadcast to all listeners from anywhere
 in your Rails app.
+At the moment it only works with Thread based Rack servers like Puma, Thin, Reel, ...
+
+Plans are to hook it up to Redis if you need to use process-based servers like Unicorn.
 
 # Installation
 ```
