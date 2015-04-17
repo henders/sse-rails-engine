@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     sse-rails-engine (0.0.1)
-      rails (~> 4.2.1)
+      rails (~> 4.0)
 
 GEM
   remote: https://rubygems.org/
@@ -119,6 +119,6 @@ PLATFORMS
 DEPENDENCIES
   codeclimate-test-reporter
   hashie
-  minitest-rails
+  minitest-rails (>= 2.0)
   mocha
   sse-rails-engine!
