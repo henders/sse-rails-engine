@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'See the README.md at https://github.com/henders/sse-rails-engine'
   s.license     = 'MIT'
 
-  s.files = Dir['{app,config,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
+  s.files = Dir['{app,config,lib}/**/*', 'LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'rails', '~> 4.0'
