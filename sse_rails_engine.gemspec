@@ -11,15 +11,15 @@ Gem::Specification.new do |s|
   s.email       = ['henders@gmail.com']
   s.homepage    = 'https://github.com/henders/sse-rails-engine'
   s.summary     = 'Provides SSE connection tracking and broadcasting of events from anywhere in Rails app'
-  s.description = 'Provides SSE connection tracking and broadcasting of events from anywhere in Rails app'
+  s.description = 'See the README.md at https://github.com/henders/sse-rails-engine'
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'rails', '~> 4.0'
-  s.add_development_dependency 'minitest-rails', '>= 2.0'
-  s.add_development_dependency 'mocha'
-  s.add_development_dependency 'hashie'
-  s.add_development_dependency 'codeclimate-test-reporter'
+  s.add_development_dependency 'minitest-rails', '~> 2.0'
+  s.add_development_dependency 'mocha', '~> 1.0'
+  s.add_development_dependency 'hashie', '~> 3.0'
+  s.add_development_dependency 'codeclimate-test-reporter', '~> 0'
 end
