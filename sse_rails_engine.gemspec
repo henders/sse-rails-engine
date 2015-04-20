@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir['{app,config,lib}/**/*', 'LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
+  s.required_ruby_version = '>= 2.0'
 
   s.add_dependency 'rails', '~> 4.0'
   s.add_development_dependency 'minitest-rails', '~> 2.0'

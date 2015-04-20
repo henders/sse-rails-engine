@@ -5,14 +5,16 @@
 
 This engine is designed to allow Server-Sent Events to be broadcast to all listeners from anywhere
 in your Rails app.
-At the moment it only works with Thread based Rack servers like Puma, Thin, Reel, ...
+At the moment it only works with Thread based Rack servers like Puma.
 
 Plans are to hook it up to Redis if you need to use process-based servers like Unicorn.
 
-This has been mostly tested with Ruby v2.2.1 and Rails v4.2.1 + Puma.
+This has been mostly tested with Ruby v2.2.1 and Rails v4.2.1 + [Puma][puma].
 
 This uses the Rack socket hijacking functionality to avoid having to occupy a thread per connection. Now
 only 1 extra thread in your app is required.
+
+[puma]: https://github.com/puma/puma
 
 # Installation
 ```
