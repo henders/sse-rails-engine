@@ -11,6 +11,9 @@ Plans are to hook it up to Redis if you need to use process-based servers like U
 
 This has been mostly tested with Ruby v2.2.1 and Rails v4.2.1 + Puma.
 
+This uses the Rack socket hijacking functionality to avoid having to occupy a thread per connection. Now
+only 1 extra thread in your app is required.
+
 # Installation
 ```
 gem 'sse-rails-engine'

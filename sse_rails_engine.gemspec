@@ -8,13 +8,13 @@ Gem::Specification.new do |s|
   s.name        = 'sse-rails-engine'
   s.version     = SseRailsEngine::VERSION
   s.authors     = ['Shane Hender']
-  s.email       = ['shender@zendesk.com']
+  s.email       = ['henders@gmail.com']
   s.homepage    = 'https://github.com/henders/sse-rails-engine'
   s.summary     = 'Provides SSE connection tracking and broadcasting of events from anywhere in Rails app'
   s.description = 'Provides SSE connection tracking and broadcasting of events from anywhere in Rails app'
   s.license     = 'MIT'
 
-  s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
+  s.files = Dir['{app,config,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'rails', '~> 4.0'

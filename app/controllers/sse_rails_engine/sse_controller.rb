@@ -2,11 +2,9 @@ require_dependency "sse_rails_engine/application_controller"
 
 module SseRailsEngine
   class SseController < ApplicationController
-    include ActionController::Live
-
     def connect
+      raise 'This Rack server does not support hijacking, ensure you are using >v1.5 of Rack' unless request.env['rack.hijack?']
       SseRailsEngine.manager.register(response)
-      SseRailsEngine.wait_for_disconnect(response)
       render json: {}
     end
   end
