@@ -2,17 +2,27 @@ module SseRailsEngine
   class Manager
     attr_reader :connections
 
+    SSE_HEADER = ["HTTP/1.1 200 OK\r\n",
+      "Content-Type: text/event-stream\r\n",
+      "Cache-Control: no-cache, no-store\r\n",
+      "Connection: close\r\n",
+      "\r\n"].join.freeze
+
     def initialize
       @mutex = Mutex.new
       @connections = {}
       start_heartbeats
     end
 
-    def register(response)
-      response.headers['Content-Type'] = 'text/event-stream'
-      response.headers['Cache-Control'] = 'no-cache'
-      # Perform partial hijack of socket (http://old.blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/)
-      response.headers['rack.hijack'] = ->(io) { SseRailsEngine.manager.open_connection(io) }
+    def register(env)
+      if env['rack.hijack']
+        env['rack.hijack'].call
+        socket = env['rack.hijack_io']
+        # Perform full hijack of socket (http://old.blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/)
+        SseRailsEngine.manager.open_connection(socket)
+      else
+        raise 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
+      end
     end
 
     def send_event(name, data)
@@ -20,11 +30,13 @@ module SseRailsEngine
         @connections.dup.each do |stream, sse|
           begin
             sse.write(data, event: name)
+            stream.flush
           rescue IOError, Errno::EPIPE, Errno::ETIMEDOUT
             Rails.logger.debug "SSE Client disconnected: #{stream}"
             close_connection(stream)
           rescue => ex
             Rails.logger.error "Failed to send event to SSE: #{stream} (#{name}, #{data} - #{ex.message} (#{ex.class}"
+            close_connection(stream)
           end
         end
       end
@@ -32,9 +44,15 @@ module SseRailsEngine
 
     def open_connection(io)
       Rails.logger.debug "New SSE Client connected: #{io}"
+      io.write(SSE_HEADER)
       @mutex.synchronize do
         @connections[io] = ActionController::Live::SSE.new(io)
       end
+    end
+
+    def call(env)
+      SseRailsEngine.manager.register(env)
+      [ -1, {}, []]
     end
 
     private
@@ -46,7 +64,7 @@ module SseRailsEngine
     end
 
     def start_heartbeats
-      Rails.logger.debug 'Starting SSE heartbeat thread!!!!!'
+      Rails.logger.debug 'Starting SSE heartbeat thread!'
       Thread.new do
         loop do
           sleep SseRailsEngine.heartbeat_interval

@@ -1,3 +1,3 @@
 SseRailsEngine::Engine.routes.draw do
-  root to: 'sse#connect'
+  root to: SseRailsEngine.manager
 end
