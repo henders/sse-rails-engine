@@ -1,12 +1,12 @@
 require_relative '../../test_helper'
 
 describe SseRailsEngine::Manager do
-  let(:manager) { SseRailsEngine::manager }
-  let(:env) {
+  let(:manager) { SseRailsEngine.manager }
+  let(:env) do
     Hashie::Mash.new('rack.hijack?' => true,
-                     'rack.hijack' => ->() { },
+                     'rack.hijack' => ->() {},
                      'rack.hijack_io' => StringIO.new)
-  }
+  end
 
   before do
     SseRailsEngine.instance_variable_set(:@manager, nil)
@@ -54,19 +54,20 @@ describe SseRailsEngine::Manager do
 
   it 'writes event object to stream' do
     manager.register(env)
-    manager.send_event('foo', { a: 123, 'b' => 'abc', c: { foo: 'bar' } })
-    env['rack.hijack_io'].string.must_equal(SseRailsEngine::Manager::SSE_HEADER + "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n")
+    manager.send_event('foo', a: 123, 'b' => 'abc', c: { foo: 'bar' })
+    env['rack.hijack_io'].string.must_equal(
+      SseRailsEngine::Manager::SSE_HEADER + "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n")
   end
 
   it 'writes minimum headers to rack middleware' do
-    manager.call(env).must_equal [ -1, {}, []]
+    manager.call(env).must_equal [-1, {}, []]
   end
 
   it 'ensures heartbeat is sent' do
-    SseRailsEngine.stubs(:heartbeat_interval).returns(0,5)
+    SseRailsEngine.stubs(:heartbeat_interval).returns(0, 5)
     SseRailsEngine::Manager.unstub(:start_heartbeats)
     SseRailsEngine::Manager.any_instance.expects(:send_event).once
-    manager = SseRailsEngine::Manager.new
+    SseRailsEngine::Manager.new
     sleep 0.2
   end
 end

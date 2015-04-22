@@ -1,14 +1,26 @@
 module SseRailsEngine
+  # This class provides the ability to track SSE connections and broadcast events
+  # to all connected clients from anywhere in your Rails app.
+  #
+  # Example Usage:
+  #
+  #   class MyController < ActionController::Base
+  #     def do_stuff
+  #       SseRailsEngine.send_event('event name', 'any ruby object or string for data')
+  #     end
+  #   end
+  #
+  # Note: SSEs are not currently supported by IE.
   class Manager
     RackHijackUnsupported = Class.new RuntimeError
 
     attr_reader :connections, :heartbeat_thread
 
     SSE_HEADER = ["HTTP/1.1 200 OK\r\n",
-      "Content-Type: text/event-stream\r\n",
-      "Cache-Control: no-cache, no-store\r\n",
-      "Connection: close\r\n",
-      "\r\n"].join.freeze
+                  "Content-Type: text/event-stream\r\n",
+                  "Cache-Control: no-cache, no-store\r\n",
+                  "Connection: close\r\n",
+                  "\r\n"].join.freeze
 
     def initialize
       @mutex = Mutex.new
@@ -23,10 +35,11 @@ module SseRailsEngine
         # Perform full hijack of socket (http://old.blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/)
         SseRailsEngine.manager.open_connection(socket)
       else
-        raise RackHijackUnsupported, 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
+        fail RackHijackUnsupported, 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def send_event(name, data)
       @mutex.synchronize do
         @connections.dup.each do |stream, sse|
@@ -43,6 +56,7 @@ module SseRailsEngine
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def open_connection(io)
       Rails.logger.debug "New SSE Client connected: #{io}"
@@ -54,7 +68,7 @@ module SseRailsEngine
 
     def call(env)
       SseRailsEngine.manager.register(env)
-      [ -1, {}, []]
+      [-1, {}, []]
     end
 
     private

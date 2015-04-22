@@ -1,0 +1,17 @@
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'test/dummy/**/*'
+    - 'sse_rails_engine.gemspec'
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Style/ClassVars:
+  Enabled: false
+
+Style/FileName:
+  Enabled: false

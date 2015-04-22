@@ -29,4 +29,9 @@ describe SseRailsEngine do
     end
     SseRailsEngine.heartbeat_interval.must_equal 1.minute
   end
+
+  it 'calls shortcut module function' do
+    SseRailsEngine.manager.expects(:send_event).once
+    SseRailsEngine.send_event('name', 'foo')
+  end
 end

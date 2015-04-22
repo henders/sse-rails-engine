@@ -1,2 +1,2 @@
 
-Rails.configuration.middleware.delete "Rack::Lock"
+Rails.configuration.middleware.delete 'Rack::Lock'
