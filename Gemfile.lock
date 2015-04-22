@@ -134,5 +134,5 @@ DEPENDENCIES
   hashie (~> 3.0)
   minitest-rails (~> 2.0)
   mocha (~> 1.0)
-  rubocop
+  rubocop (~> 0.0)
   sse-rails-engine!
