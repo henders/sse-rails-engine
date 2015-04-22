@@ -3,6 +3,8 @@ AllCops:
     - 'bin/**/*'
     - 'test/dummy/**/*'
     - 'sse_rails_engine.gemspec'
+    - 'db/**/*'
+    - 'vendor/**/*'
 
 Style/Documentation:
   Enabled: false
