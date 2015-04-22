@@ -1,6 +1,8 @@
 module SseRailsEngine
   class Manager
-    attr_reader :connections
+    RackHijackUnsupported = Class.new RuntimeError
+
+    attr_reader :connections, :heartbeat_thread
 
     SSE_HEADER = ["HTTP/1.1 200 OK\r\n",
       "Content-Type: text/event-stream\r\n",
@@ -21,7 +23,7 @@ module SseRailsEngine
         # Perform full hijack of socket (http://old.blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/)
         SseRailsEngine.manager.open_connection(socket)
       else
-        raise 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
+        raise RackHijackUnsupported, 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
       end
     end
 
@@ -65,7 +67,7 @@ module SseRailsEngine
 
     def start_heartbeats
       Rails.logger.debug 'Starting SSE heartbeat thread!'
-      Thread.new do
+      @heartbeat_thread = Thread.new do
         loop do
           sleep SseRailsEngine.heartbeat_interval
           send_event('heartbeat', '')
