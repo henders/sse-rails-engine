@@ -47,6 +47,12 @@ Then you can send an event from anywhere in your app:
 SseRailsEngine.send_event('test', { foo: 'bar' })
 ```
 
+# Notes
+
+## Nginx
+You may need to configure nginx to not buffer or cache SSE connections:
+http://stackoverflow.com/questions/13672743/eventsource-server-sent-events-through-nginx
+
 # License
 
 MIT - Have at it! :)
