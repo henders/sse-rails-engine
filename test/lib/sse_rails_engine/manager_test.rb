@@ -2,11 +2,8 @@ require_relative '../../test_helper'
 
 describe SseRailsEngine::Manager do
   let(:manager) { SseRailsEngine.manager }
-  let(:env) do
-    Hashie::Mash.new('rack.hijack?' => true,
-                     'rack.hijack' => ->() {},
-                     'rack.hijack_io' => StringIO.new)
-  end
+  let(:env1) { Hashie::Mash.new('rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new) }
+  let(:env2) { Hashie::Mash.new('rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new) }
 
   before do
     SseRailsEngine.instance_variable_set(:@manager, nil)
@@ -14,13 +11,13 @@ describe SseRailsEngine::Manager do
   end
 
   it 'ensures rack supports hijacking' do
-    env['rack.hijack'] = nil
-    assert_raises(SseRailsEngine::Manager::RackHijackUnsupported) { manager.register(env) }
+    env1['rack.hijack'] = nil
+    assert_raises(SseRailsEngine::Manager::RackHijackUnsupported) { manager.register(env1) }
   end
 
   it 'registers new response streams' do
     manager.connections.size.must_equal 0
-    manager.register(env)
+    manager.register(env1)
     manager.connections.size.must_equal 1
   end
 
@@ -31,36 +28,36 @@ describe SseRailsEngine::Manager do
   it 'closes connection when client disconnects' do
     ActionController::Live::SSE.any_instance.stubs(:write).raises(IOError)
 
-    manager.register(env)
+    manager.register(env1)
     manager.connections.size.must_equal 1
     manager.send_event('foo', 'bar')
     manager.connections.size.must_equal 0
   end
 
   it 'closes connection when failed sending event to client' do
-    ActionController::Live::SSE.any_instance.stubs(:write).raises(RuntimeError)
+    ActionController::Live::SSE.any_instance.stubs(:write).raises(IOError)
 
-    manager.register(env)
+    manager.register(env1)
     manager.connections.size.must_equal 1
     manager.send_event('foo', 'bar')
     manager.connections.size.must_equal 0
   end
 
   it 'writes string event to stream' do
-    manager.register(env)
+    manager.register(env1)
     manager.send_event('foo', 'bar')
-    env['rack.hijack_io'].string.must_equal(SseRailsEngine::Manager::SSE_HEADER + "event: foo\ndata: bar\n\n")
+    env1['rack.hijack_io'].string.must_equal(SseRailsEngine::Connection::SSE_HEADER + "event: foo\ndata: bar\n\n")
   end
 
   it 'writes event object to stream' do
-    manager.register(env)
+    manager.register(env1)
     manager.send_event('foo', a: 123, 'b' => 'abc', c: { foo: 'bar' })
-    env['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Manager::SSE_HEADER + "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n")
+    env1['rack.hijack_io'].string.must_equal(
+      SseRailsEngine::Connection::SSE_HEADER + "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n")
   end
 
   it 'writes minimum headers to rack middleware' do
-    manager.call(env).must_equal [-1, {}, []]
+    manager.call(env1).must_equal [-1, {}, []]
   end
 
   it 'ensures heartbeat is sent' do
@@ -69,5 +66,32 @@ describe SseRailsEngine::Manager do
     SseRailsEngine::Manager.any_instance.expects(:send_event).once
     SseRailsEngine::Manager.new
     sleep 0.2
+  end
+
+  it 'sends events to connections that register for that channel' do
+    env1['QUERY_STRING'] = 'channels=foo,bar'
+    manager.register(env1)
+    manager.send_event('foo')
+    env1['rack.hijack_io'].string.must_equal(
+      SseRailsEngine::Connection::SSE_HEADER + "event: foo\ndata: \n\n", 'env1 should have received event')
+  end
+
+  it 'does not send events to clients that didnt register for them' do
+    env1['QUERY_STRING'] = 'channels=foo,bar'
+    manager.register(env1)
+    manager.send_event('test')
+    env1['rack.hijack_io'].string.must_equal(
+      SseRailsEngine::Connection::SSE_HEADER, 'env2 should not have received event')
+  end
+
+  it 'filters msgs depending on channels requested' do
+    env2['QUERY_STRING'] = 'channels=foo,bar'
+    manager.register(env1)
+    manager.register(env2)
+    manager.send_event('test')
+    env1['rack.hijack_io'].string.must_equal(
+      SseRailsEngine::Connection::SSE_HEADER + "event: test\ndata: \n\n", 'env1 should have received event')
+    env2['rack.hijack_io'].string.must_equal(
+      SseRailsEngine::Connection::SSE_HEADER, 'env2 should not have received event')
   end
 end

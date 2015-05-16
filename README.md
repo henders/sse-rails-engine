@@ -47,6 +47,32 @@ Then you can send an event from anywhere in your app:
 SseRailsEngine.send_event('test', { foo: 'bar' })
 ```
 
+# Channels
+
+It supports the idea of channels so that if pages don't need to receive certain events, then you won't waste
+the bandwidth or processing on the server:
+
+Clientside:
+```
+$(document).ready(function () {
+  var source = new EventSource('/sse?channels=foo,bar,baz');
+
+  source.addEventListener('other', function(e) {
+    // Will never be called
+  }, true);
+
+  source.addEventListener('foo', function(e) {
+    // Do stuff
+  }, true);
+});
+
+```
+Serverside:
+```
+SseRailsEngine.send_event('foo', '') # Sent to the client
+SseRailsEngine.send_event('other', '') # Won't be sent to the client
+```
+
 # Notes
 
 ## Nginx
