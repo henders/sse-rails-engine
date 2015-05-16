@@ -30,7 +30,7 @@ module SseRailsEngine
     end
 
     def requested_channels(env)
-      Rack::Utils.parse_query(env["QUERY_STRING"]).fetch('channels', []).split(',').flatten
+      Rack::Utils.parse_query(env['QUERY_STRING']).fetch('channels', []).split(',').flatten
     end
   end
 end

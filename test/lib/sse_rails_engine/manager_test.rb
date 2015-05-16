@@ -53,7 +53,9 @@ describe SseRailsEngine::Manager do
     manager.register(env1)
     manager.send_event('foo', a: 123, 'b' => 'abc', c: { foo: 'bar' })
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection::SSE_HEADER + "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n")
+      SseRailsEngine::Connection::SSE_HEADER +
+      "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n"
+    )
   end
 
   it 'writes minimum headers to rack middleware' do
