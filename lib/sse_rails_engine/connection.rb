@@ -35,9 +35,8 @@ module SseRailsEngine
     end
 
     def clear_active_db_connections
-      if defined? ActiveRecord::Base.clear_active_connections!
-        ActiveRecord::Base.clear_active_connections!
-      end
+      return unless defined? ActiveRecord::Base.clear_active_connections!
+      ActiveRecord::Base.clear_active_connections!
     end
   end
 end
