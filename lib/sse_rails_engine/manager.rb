@@ -40,7 +40,7 @@ module SseRailsEngine
         @connections.dup.each do |stream, connection|
           begin
             connection.write(name, data)
-          rescue IOError, Errno::EPIPE, Errno::ETIMEDOUT => ex
+          rescue => ex
             Rails.logger.debug "SSE Client disconnected: #{stream} - #{ex.message}"
             close_connection(stream)
           end
@@ -49,9 +49,9 @@ module SseRailsEngine
     end
 
     def open_connection(io, env)
-      Rails.logger.debug "New SSE Client connected: #{io}"
       @mutex.synchronize do
         @connections[io] = Connection.new(io, env)
+        Rails.logger.debug "New SSE Client connected: #{io} - #{@connections[io].channels}"
       end
     end
 
