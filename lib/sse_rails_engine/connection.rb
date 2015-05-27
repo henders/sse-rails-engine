@@ -1,6 +1,6 @@
 module SseRailsEngine
   class Connection
-    attr_accessor :stream, :channels
+    attr_accessor :stream, :channels, :env
 
     SSE_HEADER = ["HTTP/1.1 200 OK\r\n",
                   "Content-Type: text/event-stream\r\n",
@@ -15,6 +15,7 @@ module SseRailsEngine
       @socket.flush
       @stream = ActionController::Live::SSE.new(io)
       @channels = requested_channels(env)
+      @env = env
     end
 
     def write(name, data)
