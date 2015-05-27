@@ -17,21 +17,21 @@ only 1 extra thread in your app is required.
 [puma]: https://github.com/puma/puma
 
 # Installation
-```
+```ruby
 gem 'sse-rails-engine'
 ```
 
 # Usage
 
 Mount the engine in your ```config/routes.rb```:
-```
+```ruby
 Rails.application.routes.draw do
   mount SseRailsEngine::Engine, at: '/sse'
 end
 ```
 
 To use, initialize the connection on the client side, so add the following javascript:
-```
+```javascript
 $(document).ready(function () {
   var source = new EventSource('/sse');
 
@@ -43,7 +43,7 @@ $(document).ready(function () {
 ```
 
 Then you can send an event from anywhere in your app:
-```
+```ruby
 SseRailsEngine.send_event('test', { foo: 'bar' })
 ```
 
@@ -53,7 +53,7 @@ It supports the idea of channels so that if pages don't need to receive certain 
 the bandwidth or processing on the server:
 
 Clientside:
-```
+```javascript
 $(document).ready(function () {
   var source = new EventSource('/sse?channels=foo,bar,baz');
 
@@ -68,9 +68,23 @@ $(document).ready(function () {
 
 ```
 Serverside:
-```
+```ruby
 SseRailsEngine.send_event('foo', '') # Sent to the client
 SseRailsEngine.send_event('other', '') # Won't be sent to the client
+```
+
+# Callbacks
+
+You can get connect/disconnect callbacks for each client with the 'env' that is associated with each connection, e.g.:
+
+```ruby
+SseRailsEngine.manager.on_connect do |env|
+  SseRailsEngine.send_event('happy event', "Everyone look, #{env['QUERY_STRING']} joined!")
+end
+
+SseRailsEngine.manager.on_disconnect do |env|
+  SseRailsEngine.send_event('unhappy event', "Awwww, #{env['QUERY_STRING']} left us!")
+end
 ```
 
 # Notes

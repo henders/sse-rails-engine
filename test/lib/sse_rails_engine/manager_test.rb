@@ -2,8 +2,8 @@ require_relative '../../test_helper'
 
 describe SseRailsEngine::Manager do
   let(:manager) { SseRailsEngine.manager }
-  let(:env1) { Hashie::Mash.new('rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new) }
-  let(:env2) { Hashie::Mash.new('rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new) }
+  let(:env1) { Hashie::Mash.new('rack.hijack?': true, 'rack.hijack': ->() {}, 'rack.hijack_io': StringIO.new, name: 'env1') }
+  let(:env2) { Hashie::Mash.new('rack.hijack?': true, 'rack.hijack': ->() {}, 'rack.hijack_io': StringIO.new, name: 'env2') }
 
   before do
     SseRailsEngine.instance_variable_set(:@manager, nil)
@@ -95,5 +95,26 @@ describe SseRailsEngine::Manager do
       SseRailsEngine::Connection::SSE_HEADER + "event: test\ndata: \n\n", 'env1 should have received event')
     env2['rack.hijack_io'].string.must_equal(
       SseRailsEngine::Connection::SSE_HEADER, 'env2 should not have received event')
+  end
+
+  it 'calls connection callbacks when new connection arrives' do
+    callback_env = nil
+    manager.on_connect do |env|
+      callback_env = env
+    end
+    manager.register(env1)
+    callback_env.name.must_equal 'env1'
+  end
+
+  it 'calls disconnection callbacks when client leaves' do
+    ActionController::Live::SSE.any_instance.stubs(:write).raises(IOError)
+    callback_env = nil
+    manager.on_disconnect do |env|
+      callback_env = env
+    end
+    manager.register(env1)
+    manager.send_event('foo')
+
+    callback_env.name.must_equal 'env1'
   end
 end

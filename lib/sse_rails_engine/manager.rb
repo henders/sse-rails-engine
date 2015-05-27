@@ -22,6 +22,8 @@ module SseRailsEngine
       @mutex = Mutex.new
       @connections = {}
       start_heartbeats
+      @connect_listeners = []
+      @disconnect_listeners = []
     end
 
     def register(env)
@@ -30,6 +32,7 @@ module SseRailsEngine
         socket = env['rack.hijack_io']
         # Perform full hijack of socket (http://old.blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/)
         open_connection(socket, env)
+        connect_callback(env)
       else
         fail RackHijackUnsupported, 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
       end
@@ -60,12 +63,29 @@ module SseRailsEngine
       [-1, {}, []]
     end
 
+    def on_connect(&block)
+      @connect_listeners << block
+    end
+
+    def on_disconnect(&block)
+      @disconnect_listeners << block
+    end
+
     private
 
     def close_connection(stream)
       return if @connections[stream].nil?
       @connections[stream].stream.close
+      disconnect_callback(@connections[stream].env)
       @connections.delete(stream)
+    end
+
+    def connect_callback(env)
+      @connect_listeners.each { |listener| listener.call(env) }
+    end
+
+    def disconnect_callback(env)
+      @disconnect_listeners.each { |listener| listener.call(env) }
     end
 
     def start_heartbeats
