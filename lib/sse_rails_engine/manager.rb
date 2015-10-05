@@ -20,7 +20,8 @@ module SseRailsEngine
 
     def initialize
       @mutex = Mutex.new
-      @connections = {}
+      @connections = ThreadSafe::Cache.new
+
       start_heartbeats
     end
 
@@ -36,28 +37,26 @@ module SseRailsEngine
     end
 
     def send_event(name, data = '')
-      @mutex.synchronize do
-        @connections.dup.each do |stream, connection|
-          begin
-            connection.write(name, data)
-          rescue => ex
-            Rails.logger.debug "SSE Client disconnected: #{stream} - #{ex.message}"
-            close_connection(stream)
-          end
+      @connections.each_pair do |stream, connection|
+        begin
+          connection.write(name, data)
+        rescue => ex
+          Rails.logger.debug "SSE Client disconnected: #{stream} - #{ex.message}"
+          close_connection(stream)
         end
       end
     end
 
     def open_connection(io, env)
-      @mutex.synchronize do
-        @connections[io] = Connection.new(io, env)
-        Rails.logger.debug "New SSE Client connected: #{io} - #{@connections[io].channels}"
-      end
+      @connections[io] = Connection.new(io, env)
+      Rails.logger.debug "New SSE Client connected: #{io} - #{@connections[io].channels}"
     end
 
     def call(env)
       register(env)
       [-1, {}, []]
+    ensure
+      ActiveRecord::Base.clear_active_connections! if defined?(ActiveRecord)
     end
 
     private
