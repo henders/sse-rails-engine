@@ -37,12 +37,14 @@ module SseRailsEngine
     end
 
     def send_event(name, data = '')
-      @connections.each_pair do |stream, connection|
-        begin
-          connection.write(name, data)
-        rescue => ex
-          Rails.logger.debug "SSE Client disconnected: #{stream} - #{ex.message}"
-          close_connection(stream)
+      @mutex.synchronize do
+        @connections.each_pair do |stream, connection|
+          begin
+            connection.write(name, data)
+          rescue => ex
+            Rails.logger.debug "SSE Client disconnected: #{stream} - #{ex.message}"
+            close_connection(stream)
+          end
         end
       end
     end
