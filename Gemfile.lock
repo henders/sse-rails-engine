@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sse-rails-engine (1.3.1)
+    sse-rails-engine (1.3.2)
       rails (~> 4.0)
 
 GEM
@@ -42,7 +42,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    arel (6.0.0)
+    arel (6.0.3)
     ast (2.0.0)
     astrolabe (1.3.0)
       parser (>= 2.2.0.pre.3, < 3.0)
@@ -51,7 +51,7 @@ GEM
       simplecov (>= 0.7.1, < 1.0.0)
     docile (1.1.5)
     erubis (2.7.0)
-    globalid (0.3.5)
+    globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.1)
     i18n (0.7.0)
@@ -61,7 +61,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     metaclass (0.0.4)
-    mime-types (2.5)
+    mime-types (2.6.2)
     mini_portile (0.6.2)
     minitest (5.6.0)
     minitest-rails (2.1.1)
@@ -115,9 +115,9 @@ GEM
       json (~> 1.8)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
-    sprockets (3.0.3)
-      rack (~> 1.0)
-    sprockets-rails (2.2.4)
+    sprockets (3.4.0)
+      rack (> 1, < 3)
+    sprockets-rails (2.3.3)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
@@ -136,3 +136,6 @@ DEPENDENCIES
   mocha (~> 1.0)
   rubocop (~> 0.0)
   sse-rails-engine!
+
+BUNDLED WITH
+   1.10.6
