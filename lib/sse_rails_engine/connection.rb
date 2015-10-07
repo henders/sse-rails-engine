@@ -9,7 +9,6 @@ module SseRailsEngine
                   "\r\n"].join.freeze
 
     def initialize(io, env)
-      clear_active_db_connections
       @socket = io
       @socket.write SSE_HEADER
       @socket.flush
@@ -32,11 +31,6 @@ module SseRailsEngine
 
     def requested_channels(env)
       Rack::Utils.parse_query(env['QUERY_STRING']).fetch('channels', []).split(',').flatten
-    end
-
-    def clear_active_db_connections
-      return unless defined? ActiveRecord::Base.clear_active_connections!
-      ActiveRecord::Base.clear_active_connections!
     end
   end
 end
