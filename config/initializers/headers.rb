@@ -5,9 +5,8 @@ headers = [
   'Connection: close'
 ]
 
-if origin = SseRailsEngine.access_control_allow_origin
-  headers << "Access-Control-Allow-Origin: #{origin}"
-end
+origin = SseRailsEngine.access_control_allow_origin
+headers << "Access-Control-Allow-Origin: #{origin}" if origin
 
 headers << '' << ''
 
