@@ -1,16 +1,11 @@
 module SseRailsEngine
   class Connection
     attr_accessor :stream, :channels
-
-    SSE_HEADER = ["HTTP/1.1 200 OK\r\n",
-                  "Content-Type: text/event-stream\r\n",
-                  "Cache-Control: no-cache, no-store\r\n",
-                  "Connection: close\r\n",
-                  "\r\n"].join.freeze
+    cattr_accessor :sse_header
 
     def initialize(io, env)
       @socket = io
-      @socket.write SSE_HEADER
+      @socket.write(sse_header)
       @socket.flush
       @stream = ActionController::Live::SSE.new(io)
       @channels = requested_channels(env)
@@ -26,7 +21,7 @@ module SseRailsEngine
 
     def filtered?(channel)
       return false if @channels.empty? || channel == Manager::HEARTBEAT_EVENT
-      !@channels.include? channel
+      !@channels.include?(channel)
     end
 
     def requested_channels(env)

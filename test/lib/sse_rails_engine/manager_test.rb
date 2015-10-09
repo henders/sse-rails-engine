@@ -46,14 +46,14 @@ describe SseRailsEngine::Manager do
   it 'writes string event to stream' do
     manager.register(env1)
     manager.send_event('foo', 'bar')
-    env1['rack.hijack_io'].string.must_equal(SseRailsEngine::Connection::SSE_HEADER + "event: foo\ndata: bar\n\n")
+    env1['rack.hijack_io'].string.must_equal(SseRailsEngine::Connection.sse_header + "event: foo\ndata: bar\n\n")
   end
 
   it 'writes event object to stream' do
     manager.register(env1)
     manager.send_event('foo', a: 123, 'b' => 'abc', c: { foo: 'bar' })
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection::SSE_HEADER +
+      SseRailsEngine::Connection.sse_header +
       "event: foo\ndata: {\"a\":123,\"b\":\"abc\",\"c\":{\"foo\":\"bar\"}}\n\n"
     )
   end
@@ -75,7 +75,7 @@ describe SseRailsEngine::Manager do
     manager.register(env1)
     manager.send_event('foo')
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection::SSE_HEADER + "event: foo\ndata: \n\n", 'env1 should have received event')
+      SseRailsEngine::Connection.sse_header + "event: foo\ndata: \n\n", 'env1 should have received event')
   end
 
   it 'does not send events to clients that didnt register for them' do
@@ -83,7 +83,7 @@ describe SseRailsEngine::Manager do
     manager.register(env1)
     manager.send_event('test')
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection::SSE_HEADER, 'env2 should not have received event')
+      SseRailsEngine::Connection.sse_header, 'env2 should not have received event')
   end
 
   it 'filters msgs depending on channels requested' do
@@ -92,8 +92,8 @@ describe SseRailsEngine::Manager do
     manager.register(env2)
     manager.send_event('test')
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection::SSE_HEADER + "event: test\ndata: \n\n", 'env1 should have received event')
+      SseRailsEngine::Connection.sse_header + "event: test\ndata: \n\n", 'env1 should have received event')
     env2['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection::SSE_HEADER, 'env2 should not have received event')
+      SseRailsEngine::Connection.sse_header, 'env2 should not have received event')
   end
 end

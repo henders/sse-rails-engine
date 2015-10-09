@@ -11,6 +11,8 @@ require "rails/test_unit/railtie"
 Bundler.require(*Rails.groups)
 require "sse-rails-engine"
 
+SseRailsEngine.access_control_allow_origin = 'https://example.org'
+
 module Dummy
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -26,4 +28,3 @@ module Dummy
     # config.i18n.default_locale = :de
   end
 end
-
