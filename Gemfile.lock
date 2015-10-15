@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sse-rails-engine (1.3.2)
+    sse-rails-engine (1.4.0)
       rails (~> 4.0)
 
 GEM
