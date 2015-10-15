@@ -73,6 +73,12 @@ SseRailsEngine.send_event('foo', '') # Sent to the client
 SseRailsEngine.send_event('other', '') # Won't be sent to the client
 ```
 
+# Configuration
+
+You can now enable the 'Access-Control-Allow-Origin' header in connection replies as well by setting:
+```SseRailsEngine.access_control_allow_origin = 'https://example.org'```
+
+
 # Notes
 
 ## Nginx
