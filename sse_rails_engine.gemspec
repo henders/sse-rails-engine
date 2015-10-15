@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '~> 4.0'
   s.add_development_dependency 'minitest-rails', '~> 2.0'
   s.add_development_dependency 'mocha', '~> 1.0'
+  s.add_development_dependency "bump"
   s.add_development_dependency 'hashie', '~> 3.0'
   s.add_development_dependency 'codeclimate-test-reporter', '~> 0'
   s.add_development_dependency 'rubocop', '~> 0.0'
