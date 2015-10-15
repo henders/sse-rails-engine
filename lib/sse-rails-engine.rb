@@ -3,9 +3,9 @@ require 'sse_rails_engine/connection'
 require 'sse_rails_engine/manager'
 
 module SseRailsEngine
-  mattr_accessor :heartbeat_interval
+  mattr_accessor :heartbeat_interval, :access_control_allow_origin
 
-  @@heartbeat_interval = 5.seconds
+  self.heartbeat_interval = 5.seconds
 
   def self.manager
     @manager ||= Manager.new

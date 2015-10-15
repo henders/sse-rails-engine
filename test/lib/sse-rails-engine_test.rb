@@ -27,11 +27,16 @@ describe SseRailsEngine do
     SseRailsEngine.setup do |config|
       config.heartbeat_interval = 1.minute
     end
+
     SseRailsEngine.heartbeat_interval.must_equal 1.minute
   end
 
   it 'calls shortcut module function' do
     SseRailsEngine.manager.expects(:send_event).once
     SseRailsEngine.send_event('name', 'foo')
+  end
+
+  it 'adds an access-control-allow-origin header' do
+    SseRailsEngine::Connection.sse_header.must_include('Access-Control-Allow-Origin: https://example.org')
   end
 end
