@@ -1,1 +1,2 @@
-Rails.configuration.middleware.delete 'Rack::Lock'
+require 'rack/lock'
+Rails.configuration.middleware.delete Rack::Lock

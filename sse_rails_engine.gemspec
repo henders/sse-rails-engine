@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
   s.required_ruby_version = '>= 2.0'
 
-  s.add_dependency 'rails', '~> 4.0'
+  s.add_dependency 'rails', '>= 4.0', '< 5.1'
   s.add_development_dependency 'minitest-rails', '~> 2.0'
   s.add_development_dependency 'mocha', '~> 1.0'
   s.add_development_dependency "bump"
