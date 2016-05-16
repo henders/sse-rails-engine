@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    sse-rails-engine (1.4.0)
-      rails (~> 4.0)
+    sse-rails-engine (1.5.0)
+      rails (>= 4.0, < 5.1)
 
 GEM
   remote: https://rubygems.org/
