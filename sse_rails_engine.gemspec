@@ -1,4 +1,4 @@
-$:.push File.expand_path('../lib', __FILE__)
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
 
 # Maintain your gem's version:
 require 'sse_rails_engine/version'
@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest-rails', '~> 3.0'
   s.add_development_dependency 'mocha', '~> 1.0'
   s.add_development_dependency "bump"
-  s.add_development_dependency 'hashie', '~> 3.0'
   s.add_development_dependency 'codeclimate-test-reporter', '~> 0.0' # 1.0 needs some changes
   s.add_development_dependency 'rubocop', '~> 0.0'
 end

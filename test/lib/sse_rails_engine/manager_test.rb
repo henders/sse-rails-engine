@@ -2,8 +2,8 @@ require_relative '../../test_helper'
 
 describe SseRailsEngine::Manager do
   let(:manager) { SseRailsEngine.manager }
-  let(:env1) { Hashie::Mash.new('rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new) }
-  let(:env2) { Hashie::Mash.new('rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new) }
+  let(:env1) { {'rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new} }
+  let(:env2) { {'rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new} }
 
   before do
     SseRailsEngine.instance_variable_set(:@manager, nil)
