@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SseRailsEngine
   # This class provides the ability to track SSE connections and broadcast events
   # to all connected clients from anywhere in your Rails app.
@@ -32,7 +34,7 @@ module SseRailsEngine
         # Perform full hijack of socket (http://old.blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/)
         open_connection(socket, env)
       else
-        fail RackHijackUnsupported, 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
+        raise RackHijackUnsupported, 'This Rack server does not support hijacking, ensure you are using >= v1.5 of Rack'
       end
     end
 

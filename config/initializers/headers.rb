@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 headers = [
   'HTTP/1.1 200 OK',
   'Content-Type: text/event-stream',

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require_relative '../../test_helper'
 
 describe SseRailsEngine::Manager do
   let(:manager) { SseRailsEngine.manager }
-  let(:env1) { {'rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new} }
-  let(:env2) { {'rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new} }
+  let(:env1) { { 'rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new } }
+  let(:env2) { { 'rack.hijack?' => true, 'rack.hijack' => ->() {}, 'rack.hijack_io' => StringIO.new } }
 
   before do
     SseRailsEngine.instance_variable_set(:@manager, nil)
@@ -75,7 +77,8 @@ describe SseRailsEngine::Manager do
     manager.register(env1)
     manager.send_event('foo')
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection.sse_header + "event: foo\ndata: \n\n", 'env1 should have received event')
+      SseRailsEngine::Connection.sse_header + "event: foo\ndata: \n\n", 'env1 should have received event'
+    )
   end
 
   it 'does not send events to clients that didnt register for them' do
@@ -83,7 +86,8 @@ describe SseRailsEngine::Manager do
     manager.register(env1)
     manager.send_event('test')
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection.sse_header, 'env2 should not have received event')
+      SseRailsEngine::Connection.sse_header, 'env2 should not have received event'
+    )
   end
 
   it 'filters msgs depending on channels requested' do
@@ -92,8 +96,10 @@ describe SseRailsEngine::Manager do
     manager.register(env2)
     manager.send_event('test')
     env1['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection.sse_header + "event: test\ndata: \n\n", 'env1 should have received event')
+      SseRailsEngine::Connection.sse_header + "event: test\ndata: \n\n", 'env1 should have received event'
+    )
     env2['rack.hijack_io'].string.must_equal(
-      SseRailsEngine::Connection.sse_header, 'env2 should not have received event')
+      SseRailsEngine::Connection.sse_header, 'env2 should not have received event'
+    )
   end
 end

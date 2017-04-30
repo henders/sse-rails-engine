@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sse_rails_engine/engine'
 require 'sse_rails_engine/connection'
 require 'sse_rails_engine/manager'
