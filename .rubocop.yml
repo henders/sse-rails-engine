@@ -1,4 +1,5 @@
 AllCops:
+  DisplayCopNames: true
   Exclude:
     - 'bin/**/*'
     - 'test/dummy/**/*'
@@ -12,8 +13,14 @@ Style/Documentation:
 Metrics/LineLength:
   Max: 120
 
+Metrics/BlockLength:
+  Enabled: false
+
 Style/ClassVars:
   Enabled: false
 
 Style/FileName:
+  Enabled: false
+
+Style/GuardClause:
   Enabled: false

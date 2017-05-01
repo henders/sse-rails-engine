@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SseRailsEngine
   class Connection
     attr_accessor :stream, :channels
