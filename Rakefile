@@ -7,6 +7,7 @@ rescue LoadError
 end
 
 require 'rdoc/task'
+require 'bump/tasks'
 
 RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
