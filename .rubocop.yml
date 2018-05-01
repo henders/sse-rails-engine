@@ -1,5 +1,6 @@
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.3
   Exclude:
     - 'bin/**/*'
     - 'test/dummy/**/*'
@@ -19,8 +20,11 @@ Metrics/BlockLength:
 Style/ClassVars:
   Enabled: false
 
-Style/FileName:
+Naming/FileName:
   Enabled: false
 
 Style/GuardClause:
+  Enabled: false
+
+Style/RedundantBegin:
   Enabled: false
