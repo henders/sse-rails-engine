@@ -43,7 +43,7 @@ module SseRailsEngine
         @connections.each_pair do |stream, connection|
           begin
             connection.write(name, data)
-          rescue => ex
+          rescue StandardError => ex
             Rails.logger.debug "SSE Client disconnected: #{stream} - #{ex.message}"
             close_connection(stream)
           end

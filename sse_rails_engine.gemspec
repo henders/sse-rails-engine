@@ -16,12 +16,12 @@ Gem::Specification.new do |s|
 
   s.files = Dir['{app,config,lib}/**/*', 'LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
-  s.required_ruby_version = '>= 2.0'
+  s.required_ruby_version = '>= 2.3'
 
-  s.add_dependency 'rails', '>= 4.2.0', '< 5.2'
-  s.add_development_dependency 'minitest-rails', '~> 3.0'
-  s.add_development_dependency 'mocha', '~> 1.0'
-  s.add_development_dependency "bump"
+  s.add_dependency 'rails', '>= 4.2.0', '< 5.3'
+  s.add_development_dependency 'minitest-rails'
+  s.add_development_dependency 'mocha'
+  s.add_development_dependency 'bump'
   s.add_development_dependency 'codeclimate-test-reporter', '~> 0.0' # 1.0 needs some changes
   s.add_development_dependency 'rubocop', '~> 0.0'
 end

@@ -3,11 +3,20 @@ language: ruby
 cache:
   bundler: true
 
+rvm:
+  - 2.3.7
+  - 2.4.4
+  - 2.5.1
+
 sudo: false
 
 before_install:
-  - 'echo ''gem: --no-ri --no-rdoc'' > ~/.gemrc'
+  - gem install bundler
 
 script:
   - bundle exec rake test
-  - bundle exec rubocop
+
+matrix:
+  include:
+    - rvm: 2.3.7
+      script: bundle exec rubocop
