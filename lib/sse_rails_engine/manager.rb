@@ -23,8 +23,6 @@ module SseRailsEngine
     def initialize
       @mutex = Mutex.new
       @connections = ThreadSafe::Cache.new
-
-      start_heartbeats
     end
 
     def register(env)
@@ -54,6 +52,7 @@ module SseRailsEngine
     def open_connection(io, env)
       @connections[io] = Connection.new(io, env)
       Rails.logger.debug "New SSE Client connected: #{io} - #{@connections[io].channels}"
+      start_heartbeats
     end
 
     def call(env)
@@ -66,18 +65,22 @@ module SseRailsEngine
     private
 
     def close_connection(stream)
-      return if @connections[stream].nil?
-      @connections[stream].stream.close
+      if connection = @connections[stream]
+        connection.stream.close
+      end
       @connections.delete(stream)
     end
 
     def start_heartbeats
-      Rails.logger.debug 'Starting SSE heartbeat thread!'
-      @heartbeat_thread = Thread.new do
+      @heartbeat_thread ||= Thread.new do
+        Rails.logger.debug 'Starting SSE heartbeat thread!'
         loop do
           sleep SseRailsEngine.heartbeat_interval
           send_event(HEARTBEAT_EVENT)
+          break unless @connections.present?
         end
+
+        @heartbeat_thread = nil
       end
     end
   end
