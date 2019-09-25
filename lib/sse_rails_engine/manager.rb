@@ -65,21 +65,21 @@ module SseRailsEngine
     private
 
     def close_connection(stream)
-      if connection = @connections[stream]
+      if connection = @connections.delete(stream)
         connection.stream.close
       end
-      @connections.delete(stream)
     end
 
     def start_heartbeats
       @heartbeat_thread ||= Thread.new do
-        Rails.logger.debug 'Starting SSE heartbeat thread!'
+        Rails.logger.debug 'Starting SSE heartbeat thread'
         loop do
           sleep SseRailsEngine.heartbeat_interval
           send_event(HEARTBEAT_EVENT)
           break unless @connections.present?
         end
 
+        Rails.logger.debug 'Terminating SSE heartbeat thread'
         @heartbeat_thread = nil
       end
     end
